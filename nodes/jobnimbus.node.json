@@ -1,0 +1,18 @@
+{
+	"node": "n8n-nodes-jobnimbus",
+	"nodeVersion": "0.0.1",
+	"codexVersion": "0.0.1",
+	"categories": ["Development", "Developer Tools"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://documenter.getpostman.com/view/3919598/S11PpG4x?version=latest#intro"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://documenter.getpostman.com/view/3919598/S11PpG4x?version=latest#intro"
+			}
+		]
+	}
+}
