@@ -1,0 +1,24 @@
+{
+  "name": "n8n-nodes-jobnimbus",
+  "version": "1.0.0",
+  "description": "n8n community node",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/angloblaxon/n8n-nodes-jobnimbus.git"
+  },
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "jobNimbus"
+  ],
+  "author": "angloblaxon",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/angloblaxon/n8n-nodes-jobnimbus/issues"
+  },
+  "homepage": "https://github.com/angloblaxon/n8n-nodes-jobnimbus#readme"
+}
