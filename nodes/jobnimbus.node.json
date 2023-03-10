@@ -1,8 +1,8 @@
 {
 	"node": "n8n-nodes-jobnimbus",
-	"nodeVersion": "0.0.1",
-	"codexVersion": "0.0.1",
-	"categories": ["Development", "Developer Tools"],
+	"nodeVersion": "1.0.1",
+	"codexVersion": "1.0.1",
+	"categories": ["Data & Storage", "Productivity"],
 	"resources": {
 		"credentialDocumentation": [
 			{

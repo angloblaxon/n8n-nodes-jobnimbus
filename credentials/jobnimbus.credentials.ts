@@ -5,8 +5,8 @@ import {
 	INodeProperties,
 } from 'n8n-workflow';
 
-export class JobNimbusCredentialsApi implements ICredentialType {
-	name = 'jobNimbusApiKey';
+export class JobNimbusApi implements ICredentialType {
+	name = 'jobNimbusApi';
 	displayName = 'Job Nimbus API Key';
 	documentationUrl = '';
 	properties: INodeProperties[] = [

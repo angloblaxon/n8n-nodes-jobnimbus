@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-jobnimbus",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "description": "n8n community node",
   "main": "index.js",
   "scripts": {
@@ -35,12 +35,10 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/jobnimbus.credentials.ts",
-      "dist/credentials/HttpBinApi.credentials.js"
+      "dist/credentials/jobnimbus.credentials.ts"
     ],
     "nodes": [
-      "dist/nodes/ExampleNode/ExampleNode.node.js",
-      "dist/nodes/HttpBin/HttpBin.node.js"
+      "dist/nodes/jobnimbus.node.js"
     ]
   },
   "devDependencies": {
