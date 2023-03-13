@@ -1,6 +1,6 @@
 import { INodeProperties } from 'n8n-workflow';
 
-// When the resource `httpVerb` is selected, this `operation` parameter will be shown.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export const contactOperations: INodeProperties[] = [
 	{
 		displayName: 'Operation',
@@ -10,7 +10,7 @@ export const contactOperations: INodeProperties[] = [
 
 		displayOptions: {
 			show: {
-				resource: ['httpVerb'],
+				resource: ['contacts'],
 			},
 		},
 		options: [
@@ -32,7 +32,7 @@ export const contactOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'PUT',
-						url: '/contacts', //need to add /{{jnid}} to the end of this
+						url: '/contacts/{{$parameter.updateContactJNID}}', //need to add /{{jnid}} to the end of this
 					},
 				},
             },
@@ -54,7 +54,7 @@ export const contactOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/contacts', //need to add /{{jnid}} to the end of this
+						url: '/contacts/{{$parameter.jnid}}', //need to add /{{jnid}} to the end of this
 					},
 				},
             },
@@ -62,209 +62,423 @@ export const contactOperations: INodeProperties[] = [
 		default: 'get',
 	},
 ];
-
-// Here we define what to show when the `get` operation is selected.
-// We do that by adding `operation: ["get"]` to `displayOptions.show`
-const getOperation: INodeProperties[] = [
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const createContactOperation: INodeProperties[] = [
 	{
-		displayName: 'Type of Data',
-		name: 'typeofData',
-		default: 'queryParameter',
-		description: 'Select type of data to send [Query Parameters]',
+		displayName: 'Contact Type',
+		name: 'createContactType',
+		default: 'residential',
+		description: 'Select type of Contact to Create',
 		displayOptions: {
 			show: {
-				resource: ['httpVerb'],
-				operation: ['get'],
+				resource: ['contacts'],
+				operation: ['createcontact'],
 			},
 		},
 		type: 'options',
 		options: [
 			{
-				name: 'Query',
-				value: 'queryParameter',
+				name: 'Residential',
+				value: 'residential',
+			},
+			{
+				name: 'Commercial',
+				value: 'residential',
+			},
+			{
+				name: 'Other',
+				value: 'other',
 			},
 		],
 		required: true,
 	},
 	{
-		displayName: 'Query Parameters',
-		name: 'arguments',
-		default: {},
-		description: "The request's query parameters",
+		displayName: 'Display Name',
+		name: 'createContactDisplayName',
+		default: '',
+		description: "The display name of the contact",
 		displayOptions: {
 			show: {
-				resource: ['httpVerb'],
-				operation: ['get'],
+				resource: ['contacts'],
+				operation: ['createcontact'],
+			},
+		},
+		required: true,
+		type: 'string',
+		placeholder: '',
+		routing: {
+			send: {
+				type: 'body',
+				property: 'display_name',
+				value: '={{$value}}',
+			},
+		},
+	},
+	{
+		displayName: 'Company Name',
+		name: 'createContactCompanyName',
+		default: '',
+		description: "The comapny name of the contact",
+		displayOptions: {
+			show: {
+				resource: ['contacts'],
+				operation: ['createcontact'],
+			},
+			hide: {
+				createContactType: ['residential', 'other'],
+			},
+
+		},
+		required: true,
+		type: 'string',
+		placeholder: '',
+		routing: {
+			send: {
+				type: 'body',
+				property: 'company',
+				value: '={{$value}}',
+			},
+		},
+	},
+	{
+		displayName: 'First Name',
+		name: 'createContactFirstName',
+		default: '',
+		description: "The first name of the contact",
+		displayOptions: {
+			show: {
+				resource: ['contacts'],
+				operation: ['createcontact'],
+			},
+			hide: {
+				createContactType: ['commercial', 'other'],
+			},
+
+		},
+		required: true,
+		type: 'string',
+		placeholder: '',
+		routing: {
+			send: {
+				type: 'body',
+				property: 'first_name',
+				value: '={{$value}}',
+			},
+		},
+	},
+	{
+		displayName: 'Last Name',
+		name: 'createContactLastName',
+		default: '',
+		description: "The Last name of the contact",
+		displayOptions: {
+			show: {
+				resource: ['contacts'],
+				operation: ['createcontact'],
+			},
+			hide: {
+				createContactType: ['commercial', 'other'],
+			},
+
+		},
+		required: true,
+		type: 'string',
+		placeholder: '',
+		routing: {
+			send: {
+				type: 'body',
+				property: 'last_name',
+				value: '={{$value}}',
+			},
+		},
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'createContactAdditionalFields',
+		default: {},
+		description: 'List of the values and fields to add to the created contact',
+		type: 'collection',
+		placeholder: 'Add Field',
+		displayOptions: {
+			show: {
+				resource: ['contacts'],
+				operation: ['createcontact'],
 			},
 		},
 		options: [
 			{
-				name: 'keyvalue',
-				displayName: 'Key:Value',
-				values: [
+				displayName: 'Additional Contact Fields',
+				name: 'createContactExtraFields',
+				placeholder: 'Add Field',
+				type: 'fixedCollection',
+				typeOptions: {
+					multipleValues: true,
+				},
+				options: [
 					{
-						displayName: 'Key',
-						name: 'key',
-						type: 'string',
-						default: '',
-						required: true,
-						description: 'Key of query parameter',
-					},
-					{
-						displayName: 'Value',
-						name: 'value',
-						type: 'string',
-						default: '',
-						routing: {
-							send: {
-								property: '={{$parent.key}}',
-								type: 'query',
+						name: 'updateFieldValues',
+						displayName: 'Field',
+						values: [
+							{
+								displayName: 'Field Name',
+								name: 'addFieldName',
+								type: 'string',
+								default: '',
+								routing: {
+									send: {
+										value: '={{$value}}',
+										property: '=enumeration[{{$index}}].label',
+										type: 'body',
+									},
+								},
+								description: 'Name of the Field',
 							},
-						},
-						required: true,
-						description: 'Value of query parameter',
+							{
+								displayName: 'Field Value',
+								name: 'addFieldValue',
+								type: 'string',
+								default: '',
+								description: 'Value of the field',
+								routing: {
+									send: {
+										value: '={{$value}}',
+										property: '=enumeration[{{$index}}].value',
+										type: 'body',
+									},
+								},
+							},
+						],
 					},
 				],
+				default: {},
+				description: 'List of fields and values that the contact can take. Please reference the API documentation for help.',
 			},
 		],
-		type: 'fixedCollection',
-		typeOptions: {
-			multipleValues: true,
-		},
 	},
 ];
-
-// Here we define what to show when the DELETE Operation is selected.
-// We do that by adding `operation: ["delete"]` to `displayOptions.show`
-const deleteOperation: INodeProperties[] = [
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const updateContactOperation: INodeProperties[] = [
 	{
-		displayName: 'Type of Data',
-		name: 'typeofData',
-		default: 'queryParameter',
-		description: 'Select type of data to send [Query Parameter Arguments, JSON-Body]',
+		displayName: 'JobNimbus ID',
+		name: 'updateContactJNID',
+		default: '',
+		description: 'JobNimbus ID (jnid) of the Contact you would like to update.',
 		displayOptions: {
 			show: {
-				resource: ['httpVerb'],
-				operation: ['delete'],
+				resource: ['contacts'],
+				operation: ['updatecontact'],
 			},
 		},
-		options: [
-			{
-				name: 'Query',
-				value: 'queryParameter',
-			},
-			{
-				name: 'JSON',
-				value: 'jsonData',
-			},
-		],
 		required: true,
-		type: 'options',
+		type: 'string',
 	},
 	{
-		displayName: 'Query Parameters',
-		name: 'arguments',
+		displayName: 'Contact Fields',
+		name: 'updateContactFields',
 		default: {},
-		description: "The request's query parameters",
+		description: 'List of the values and fields to add or change on the specified contact. Ensure they match the proper formats.',
+		type: 'collection',
+		placeholder: 'Add Field',
 		displayOptions: {
 			show: {
-				resource: ['httpVerb'],
-				operation: ['delete'],
-				typeofData: ['queryParameter'],
+				resource: ['contacts'],
+				operation: ['updatecontact'],
 			},
 		},
 		options: [
 			{
-				name: 'keyvalue',
-				displayName: 'Key:Value',
-				values: [
+				displayName: 'Contact Fields',
+				name: 'updateContactAdditionalFields',
+				placeholder: 'Add Field',
+				type: 'fixedCollection',
+				typeOptions: {
+					multipleValues: true,
+				},
+				options: [
 					{
-						displayName: 'Key',
-						name: 'key',
-						type: 'string',
-						default: '',
-						required: true,
-						description: 'Key of query parameter',
-					},
-					{
-						displayName: 'Value',
-						name: 'value',
-						type: 'string',
-						default: '',
-						routing: {
-							send: {
-								property: '={{$parent.key}}',
-								type: 'query',
+						name: 'updateFieldValues',
+						displayName: 'Field',
+						values: [
+							{
+								displayName: 'Field Name',
+								name: 'addFieldName',
+								type: 'string',
+								default: '',
+								routing: {
+									send: {
+										value: '={{$value}}',
+										property: '=enumeration[{{$index}}].label',
+										type: 'body',
+									},
+								},
+								description: 'Name of the Field',
 							},
-						},
-						required: true,
-						description: 'Value of query parameter',
+							{
+								displayName: 'Field Value',
+								name: 'addFieldValue',
+								type: 'string',
+								default: '',
+								description: 'Value of the field',
+								routing: {
+									send: {
+										value: '={{$value}}',
+										property: '=enumeration[{{$index}}].value',
+										type: 'body',
+									},
+								},
+							},
+						],
 					},
 				],
+				default: {},
+				description: 'List of fields and values that the contact can take. Please reference the API documentation for help.',
 			},
-		],
-		type: 'fixedCollection',
-		typeOptions: {
-			multipleValues: true,
-		},
-	},
+		]
+	}
+];
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const retrieveAllContactOperation: INodeProperties[] = [
 	{
-		displayName: 'JSON Object',
-		name: 'arguments',
-		default: {},
-		description: "The request's JSON properties",
+		displayName: 'Query Limit',
+		name: 'getAllContactsSize',
+		default: 1000,
+		description: 'Select the limit of how many contact records you would like to retrieve. Default is 1000',
 		displayOptions: {
 			show: {
-				resource: ['httpVerb'],
-				operation: ['delete'],
-				typeofData: ['jsonData'],
+				resource: ['contacts'],
+				operation: ['getallcontacts'],
+			},
+		},
+		required: false,
+		type: 'number',
+		routing: {
+			request: {
+				qs: {
+					size: '={{$value}}',
+				}
+			}
+		}
+	},
+	{
+		displayName: 'Retrieval Fields',
+		name: 'getAllContactsFields',
+		default: 'display_name,first_name,last_name',
+		description: 'Comma separated list of all fields per contact you would like to retrieve.',
+		displayOptions: {
+			show: {
+				resource: ['contacts'],
+				operation: ['getallcontacts'],
+			},
+		},
+		required: false,
+		type: 'string',
+		routing: {
+			request: {
+				qs: {
+					fields: '={{$value}}',
+				}
+			}
+		}
+	},
+	{
+		displayName: 'Sort Field',
+		name: 'getAllContactsSortField',
+		default: 'date_created',
+		description: 'The field name you would like to sort the results by.',
+		displayOptions: {
+			show: {
+				resource: ['contacts'],
+				operation: ['getallcontacts'],
+			},
+		},
+		required: false,
+		type: 'string',
+		routing: {
+			request: {
+				qs: {
+					sort_field: '={{$value}}',
+				}
+			}
+		}
+	},
+	{
+		displayName: 'Contact Fields',
+		name: 'updateContactFields',
+		default: {},
+		description: 'List of the values and fields to add or change on the specified contact. Ensure they match the proper formats.',
+		type: 'collection',
+		placeholder: 'Add Field',
+		displayOptions: {
+			show: {
+				resource: ['contacts'],
+				operation: ['getallcontacts'],
 			},
 		},
 		options: [
 			{
-				name: 'keyvalue',
-				displayName: 'Key:Value',
-				values: [
+				displayName: 'Contact Fields',
+				name: 'updateContactAdditionalFields',
+				placeholder: 'Add Field',
+				type: 'fixedCollection',
+				typeOptions: {
+					multipleValues: true,
+				},
+				options: [
 					{
-						displayName: 'Key',
-						name: 'key',
-						type: 'string',
-						default: '',
-						required: true,
-						description: 'Key of JSON property',
-					},
-					{
-						displayName: 'Value',
-						name: 'value',
-						type: 'string',
-						default: '',
-						routing: {
-							send: {
-								property: '={{$parent.key}}',
-								type: 'body',
+						name: 'updateFieldValues',
+						displayName: 'Field',
+						values: [
+							{
+								displayName: 'Field Name',
+								name: 'addFieldName',
+								type: 'string',
+								default: '',
+								routing: {
+									send: {
+										value: '={{$value}}',
+										property: '=enumeration[{{$index}}].label',
+										type: 'body',
+									},
+								},
+								description: 'Name of the Field',
 							},
-						},
-						required: true,
-						description: 'Value of JSON property',
+							{
+								displayName: 'Field Value',
+								name: 'addFieldValue',
+								type: 'string',
+								default: '',
+								description: 'Value of the field',
+								routing: {
+									send: {
+										value: '={{$value}}',
+										property: '=enumeration[{{$index}}].value',
+										type: 'body',
+									},
+								},
+							},
+						],
 					},
 				],
+				default: {},
+				description: 'List of fields and values that the contact can take. Please reference the API documentation for help.',
 			},
-		],
-		type: 'fixedCollection',
-		typeOptions: {
-			multipleValues: true,
-		},
-	},
+		]
+	}
 ];
 
 export const contactFields: INodeProperties[] = [
 	/* -------------------------------------------------------------------------- */
-	/*                                httpVerb:get                                */
+	/*                         Create Contact Operation                           */
 	/* -------------------------------------------------------------------------- */
-	...getOperation,
+	...createContactOperation,
 
 	/* -------------------------------------------------------------------------- */
-	/*                              httpVerb:delete                               */
+	/*                         Update Contact Operation                           */
 	/* -------------------------------------------------------------------------- */
-	...deleteOperation,
+	...updateContactOperation,
+	/* -------------------------------------------------------------------------- */
+	/*                     Retrieve All Contacts Operation                        */
+	/* -------------------------------------------------------------------------- */
+	...retrieveAllContactOperation,
 ];

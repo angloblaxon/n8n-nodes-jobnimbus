@@ -31,7 +31,7 @@ export class JobNimbus implements INodeType {
 			url: '/api1',
 			headers: {
 				Accept: 'application/json',
-				'Content-Type': 'application/json',
+				'Content-Type': 'application/json',/////
 			},
 		},
 		/**
